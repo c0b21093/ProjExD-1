@@ -1,8 +1,8 @@
 #from tkinter import font
 import sys
 from tkinter import font
-from pygame.locals import *
 import pygame as pg
+from pg.locals import *
 import random
 from time import sleep
 
@@ -17,6 +17,10 @@ F_SIZE = 60   # フォントサイズ
 
 #enemy
 enemyImage = pg.transform.scale(pg.image.load('ex06/goast.png'), (60,60)) 
+"""issues #23"""
+enemy_rct1 = enemyImage.get_rect()
+enemy_rct1.center = 225, 100
+""" """
 enemy1X, enemy1Y = 225, 100
 enemy2X, enemy2Y = 150, 200
 enemyV = 2
@@ -92,11 +96,16 @@ def draw_maze():  #マップ表示
             y += 1
 
 def hantei(p_x, p_y, e_x, e_y):
-    global running
+    global running, player_rct
+
+    """issues #23"""
+    """
     if ((p_x-40 < e_x+30) and (e_x+30 < p_x) and (p_y-40 < e_y+30) and (e_y+30 < p_y)
             or (p_x-40 < e_x) and (e_x < p_x) and (p_y-40 < e_y+30) and (e_y+30 < p_y)
             or (p_x-40 < e_x+30) and (e_x+30 < p_x) and (p_y-40 < e_y) and (e_y < p_y)
             or (p_x-40 < e_x) and (e_x < p_x) and (p_y-40 < e_y) and (e_y < p_y)):
+    """
+    if player_rct.colliderect(enemy_rct1):
         font = pg.font.SysFont(None, 80)
         end_message = font.render("Game Over", False, (50, 0, 255))
         surface.fill((0,0,0))
@@ -165,8 +174,13 @@ def input_key(): # キャラの描画とキーの移動
         if e_flag == 0:
  
             ### 移動キャラクター描画
-            pg.draw.circle(surface, (255,0,0), (now_x,now_y), M_SIZE, 0)
- 
+            """issues #23"""
+            #pg.draw.circle(surface, (255,0,0), (now_x,now_y), M_SIZE, 0)
+            player = pg.draw.circle(surface, (255,0,0), (now_x,now_y), M_SIZE, 0)
+            player_rct = player.get_rect()
+            player_rct.centerx = now_x
+            player_rct.centery = now_y
+            """ """
             ### 移動後通路の色に戻す
             if now_x != bak_x or now_y != bak_y:
                 pg.draw.circle(surface, (224,224,224), (bak_x,bak_y), M_SIZE, 0)
